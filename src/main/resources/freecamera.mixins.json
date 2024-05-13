@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.i_no_am.freecamera.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinClientConnection",
+    "MixinPlayerEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "MixinAbstractClientPlayerEntity"
+  ]
+}

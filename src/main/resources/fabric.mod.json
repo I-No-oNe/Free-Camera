@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "freecamera",
+	"version": "${version}",
+	"name": "Free Camera",
+	"description": "A Free Camera mod made by I-No-oNe!",
+	"authors": [
+		"I-No-oNe"
+	],
+	"contact": {
+		"homepage": "https://github.com/I-No-oNe/",
+		"sources": "https://github.com/I-No-oNe/Free-Camera"
+	},
+	"license": "MIT",
+	"icon": "assets/freecamera/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"net.i_no_am.freecamera.client.FreeCameraClient"
+		],
+		"main": [
+			"net.i_no_am.freecamera.FreeCamera"
+		]
+	},
+	"mixins": [
+		"freecamera.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.6",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
