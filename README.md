@@ -1,5 +1,5 @@
 # Free Camera 📷
-*A minecraft mod that let your camera to be free while the player in the same place* 📸
+*A minecraft mod that let your camera to be free while the player isn't moving* 📸
 ---------------------
 ```yml
 How to use?
