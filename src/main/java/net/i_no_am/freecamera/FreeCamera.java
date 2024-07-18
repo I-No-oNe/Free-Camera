@@ -3,15 +3,21 @@ package net.i_no_am.freecamera;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.i_no_am.freecamera.utils.FakePlayer;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.i_no_am.freecamera.client.Global;
+import net.i_no_am.freecamera.utils.ConfigUtils;
+import net.i_no_am.freecamera.utils.FakePlayerUtils;
+import net.i_no_am.freecamera.utils.PlayerUtils;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.glfw.GLFW	;
+import org.lwjgl.glfw.GLFW;
 
-public class FreeCamera implements ModInitializer {
+public class FreeCamera implements ModInitializer, Global {
+
+
+	public static boolean isCameraActive = false;
+	public FakePlayerUtils fakePlayerUtils;
+
 
 	public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 			"Toggle Free Camera",
@@ -20,51 +26,34 @@ public class FreeCamera implements ModInitializer {
 			"Free Camera"
 	));
 
-	public FakePlayer fakePlayer;
-	private static boolean isCameraActive = false;
 
 	@Override
 	public void onInitialize() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			final ClientPlayerEntity player = client.player;
-			if (player == null) return;
-			final ClientWorld world = player.clientWorld;
-			if (BIND.wasPressed()) {
-				toggleCamera();
+			if (BIND.wasPressed() && PlayerUtils.canUseFreeCam()) {
+				ConfigUtils.toggleCamera();
 				if (isCameraActive) {
-					fakePlayer = new FakePlayer(player, world);
-				} else {
-					player.setVelocity(Vec3d.ZERO);
-					player.getAbilities().flying = false;
-					if (fakePlayer != null) {
-						fakePlayer.resetPlayerPosition();
-						fakePlayer.despawn();
+					fakePlayerUtils = new FakePlayerUtils();
+					PlayerUtils.setFlying(true);
+				}else{
+					PlayerUtils.setVec3d(Vec3d.ZERO);
+					PlayerUtils.setFlying(false);
+					if (fakePlayerUtils != null) {
+						fakePlayerUtils.despawn();
 					}
-					fakePlayer = null;
+					fakePlayerUtils = null;
 				}
-			}
 
-			if (isCameraActive) {
-				player.getAbilities().flying = true;
 			}
-            if (!player.isAlive() || player.clientWorld.getDimension() != player.getWorld().getDimension()) {
+			if (PlayerUtils.isDied() || PlayerUtils.changedDimension()) {
 				if (isCameraActive) {
-					toggleCamera();
-					if (fakePlayer != null) {
-						fakePlayer.resetPlayerPosition();
-						fakePlayer.despawn();
+					ConfigUtils.toggleCamera();
+					if (fakePlayerUtils != null) {
+						fakePlayerUtils.despawn();
 					}
-					fakePlayer = null;
+					fakePlayerUtils = null;
 				}
 			}
 		});
-	}
-
-	public static boolean isCameraActive() {
-		return isCameraActive;
-	}
-
-	private static void toggleCamera() {
-		isCameraActive = !isCameraActive;
 	}
 }
