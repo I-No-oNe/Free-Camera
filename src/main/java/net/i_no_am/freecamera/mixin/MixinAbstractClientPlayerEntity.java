@@ -3,7 +3,6 @@ package net.i_no_am.freecamera.mixin;
 import com.mojang.authlib.GameProfile;
 import net.i_no_am.freecamera.client.Global;
 import net.i_no_am.freecamera.utils.ConfigUtils;
-import net.i_no_am.freecamera.utils.FakePlayerUtils;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -22,9 +21,8 @@ public abstract class MixinAbstractClientPlayerEntity extends PlayerEntity imple
 
     @Inject(method = "isSpectator", at = @At("HEAD"), cancellable = true)
     private void onIsSpectator(CallbackInfoReturnable<Boolean> cir) {
-        if (mc.player == null) return;
-        if ((Object) this instanceof FakePlayerUtils) return;
         if (ConfigUtils.isCameraActive()) {
+            if ((Object) this != mc.player) return;
             cir.setReturnValue(true);
         }
     }

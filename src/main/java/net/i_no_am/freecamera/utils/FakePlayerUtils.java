@@ -7,7 +7,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class FakePlayerUtils extends OtherClientPlayerEntity implements Global {
 
@@ -15,7 +14,7 @@ public class FakePlayerUtils extends OtherClientPlayerEntity implements Global {
     private final ClientWorld w = mc.world;
 
     public FakePlayerUtils() {
-        super(Objects.requireNonNull(mc.world), new GameProfile(UUID.fromString("66123666-6666-6666-6666-666666666600"), mc.player.getName().getString()));
+        super(Objects.requireNonNull(mc.world), new GameProfile(Objects.requireNonNull(mc.player).getUuid(), mc.player.getName().getString()));
         copyPositionAndRotation(mc.player);
         copyInventory();
         copyPlayerModel();
