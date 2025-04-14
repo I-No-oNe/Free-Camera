@@ -16,11 +16,9 @@
 	"environment": "*",
 	"entrypoints": {
 		"client": [
-			"net.i_no_am.freecamera.client.FreeCameraClient"
-		],
-		"main": [
 			"net.i_no_am.freecamera.FreeCamera"
-		]
+		],
+		"main": []
 	},
 	"mixins": [
 		"freecamera.mixins.json"
@@ -32,6 +30,6 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"view-model": "*"
 	}
 }

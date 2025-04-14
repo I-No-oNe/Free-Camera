@@ -1,7 +1,8 @@
 package net.i_no_am.freecamera.utils;
 
+import net.i_no_am.freecamera.FreeCamera;
 import net.i_no_am.freecamera.client.Global;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
@@ -10,64 +11,42 @@ public class PlayerUtils implements Global {
 
     private static DimensionType previousDimension;
 
-
-    private static ClientPlayerEntity getPlayer() {
-        return mc.player;
-    }
-
-    public static boolean notNull() {
-        return getPlayer() != null;
-    }
-
-    public static boolean isDied() {
-        ClientPlayerEntity p = getPlayer();
-        return p != null && !p.isAlive();
+    public static boolean nullCheck() {
+        return (mc == null || mc.player == null || mc.world == null);
     }
 
     public static boolean changedDimension() {
-        ClientPlayerEntity p = getPlayer();
-        if (p != null && previousDimension != null) {
-            DimensionType currentDimension = p.getWorld().getDimension();
+        if (previousDimension != null) {
+            DimensionType currentDimension = mc.player.getWorld().getDimension();
             boolean hasChanged = !currentDimension.equals(previousDimension);
             previousDimension = currentDimension;
             return hasChanged;
         }
-        if (p != null) {
-            previousDimension = p.getWorld().getDimension();
+        if (mc != null) {
+            previousDimension = mc.player.getWorld().getDimension();
         }
         return false;
     }
 
 
     public static void setFlying(boolean val) {
-        ClientPlayerEntity p = getPlayer();
-        if (p != null) {
-            p.getAbilities().flying = val;
-        }
+        mc.player.getAbilities().flying = val;
     }
 
     public static void setVec3d(Vec3d vec3d) {
-        ClientPlayerEntity p = getPlayer();
-        if (p != null) {
-            p.setVelocity(vec3d);
-        }
+        mc.player.setVelocity(vec3d);
+    }
+
+    private static boolean playerHurt() {
+        return mc.player.hurtTime > 0;
     }
 
     public static boolean canUseFreeCam(){
-        return isOnGround() || isInFluid() || isFlyingWithElytra();
+       return FreeCamera.Config.isActive() && checks();
     }
 
-    public static boolean isOnGround() {
-        ClientPlayerEntity p = getPlayer();
-        return p != null && ConfigUtils.isCameraActive() || p.isOnGround() && p != null;
-        }
-    public static boolean isInFluid() {
-        ClientPlayerEntity p = getPlayer();
-        return p != null && ConfigUtils.isCameraActive() || p.isInFluid() && p != null;
-        }
-    public static boolean isFlyingWithElytra(){
-        ClientPlayerEntity p = getPlayer();
-        return p != null && ConfigUtils.isCameraActive() || p.getInventory().getArmorStack(2).equals(Items.ELYTRA) && p != null;
+    private static boolean checks() {
+        return !playerHurt() || mc.player.isOnGround() || mc.player.isInFluid() || mc.player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA;
     }
 }
 
